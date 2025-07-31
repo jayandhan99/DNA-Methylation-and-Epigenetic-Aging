@@ -1,0 +1,164 @@
+---
+title: "Biomarkers"
+author: "Jayandhan Senthil Murugan"
+date: "2025-07-29"
+output: html_document
+---
+
+```{r}
+library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+data("IlluminaHumanMethylation450kanno.ilmn12.hg19")
+
+anno <- getAnnotation(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+
+```
+```{r}
+# Your top 20 CpG sites
+top_cpgs <- c(
+  "cg16867657", "cg10501210", "cg14361627", "cg07955995", "cg22454769",
+  "cg08097417", "cg26290632", "cg01820962", "cg17621438", "cg06639320",
+  "cg25410668", "cg04400972", "cg00748589", "cg03399905", "cg22213242",
+  "cg27320127", "cg11693709", "cg19283806", "cg26725076", "cg00329615"
+)
+
+# Filter annotations
+top_cpg_anno <- anno[rownames(anno) %in% top_cpgs, ]
+
+# View result
+top_cpg_anno[, c("Name", "chr", "pos", "UCSC_RefGene_Name", "UCSC_RefGene_Group")]
+
+```
+```{r}
+library(knitr)
+
+```
+
+```{r}
+missing <- setdiff(top_cpgs, top_cpg_table$Name)
+print(missing)
+
+```
+```{r}
+# Create a full table with all CpG IDs from top_cpgs
+full_table <- data.frame(Name = top_cpgs, stringsAsFactors = FALSE)
+
+# Merge with your annotation table (top_cpg_table), keeping all CpGs
+merged_ordered_table <- merge(full_table, top_cpg_table, by = "Name", all.x = TRUE)
+
+# Ensure the order matches top_cpgs
+merged_ordered_table <- merged_ordered_table[match(top_cpgs, merged_ordered_table$Name), ]
+
+# Print cleanly
+library(knitr)
+kable(merged_ordered_table, align = 'c', caption = "Top CpG Site Annotations (Including Missing)")
+
+
+```
+```{r}
+top_male_cpgs <- c(  "cg16867657",  "cg14361627",  "cg04826368",  "cg10501210",  "cg04875128",  "cg08097417",  "cg14209784",  "cg01820962",  "cg18738190",  "cg14692377",  "cg18473521",
+  "cg17110586",  "cg14837598",  "cg04604946",  "cg07955995",  "cg24079702",  "cg27320127",  "cg19590421",  "cg22454769",
+  "cg06639320")
+# Filter annotation table for CpGs in top_male_cpgs
+top_cpg_anno <- anno[rownames(anno) %in% top_male_cpgs, ]
+
+# View selected columns from the filtered annotation
+top_cpg_table <- top_cpg_anno[, c("Name", "chr", "pos", "UCSC_RefGene_Name", "UCSC_RefGene_Group")]
+
+# Check which CpGs from the list were not found in the annotation
+missing <- setdiff(top_male_cpgs, top_cpg_table$Name)
+print(missing)
+
+
+```
+```{r}
+# Create a full table with all CpG IDs from top_male_cpgs
+full_table <- data.frame(Name = top_male_cpgs, stringsAsFactors = FALSE)
+
+# Merge with your annotation table (top_cpg_table), keeping all CpGs
+merged_ordered_table <- merge(full_table, top_cpg_table, by = "Name", all.x = TRUE)
+
+# Ensure the order matches top_male_cpgs
+merged_ordered_table <- merged_ordered_table[match(top_male_cpgs, merged_ordered_table$Name), ]
+
+# Print cleanly
+library(knitr)
+kable(merged_ordered_table, align = 'c', caption = "Top Male CpG Site Annotations (Including Missing)")
+
+```
+```{r}
+top_female_cpgs <- c(  "cg16867657",  "cg11847992",  "cg14361627",  "cg25410668",  "cg22016779",  "cg10501210",  "cg04738109",  "cg18933331",  "cg00573770",  "cg22454769",  "cg20426994",
+  "cg03399905",  "cg06639320",  "cg19283806",  "cg07082267",  "cg01844642",  "cg08097417",  "cg03032497",  "cg19758448",  "cg22796704")
+
+```
+```{r}
+# Filter annotation table for CpGs in top_female_cpgs
+top_cpg_anno <- anno[rownames(anno) %in% top_female_cpgs, ]
+
+# View selected columns from the filtered annotation
+top_cpg_table <- top_cpg_anno[, c("Name", "chr", "pos", "UCSC_RefGene_Name", "UCSC_RefGene_Group")]
+
+# Check which CpGs from the list were not found in the annotation
+missing <- setdiff(top_female_cpgs, top_cpg_table$Name)
+print(missing)
+
+# Create a full table with all CpG IDs from top_female_cpgs
+full_table <- data.frame(Name = top_female_cpgs, stringsAsFactors = FALSE)
+
+# Merge with your annotation table (top_cpg_table), keeping all CpGs
+merged_ordered_table <- merge(full_table, top_cpg_table, by = "Name", all.x = TRUE)
+
+# Ensure the order matches top_female_cpgs
+merged_ordered_table <- merged_ordered_table[match(top_female_cpgs, merged_ordered_table$Name), ]
+
+# Print cleanly
+library(knitr)
+kable(merged_ordered_table, align = 'c', caption = "Top Female CpG Site Annotations (Including Missing)")
+
+```
+
+```{r}
+# Subset annotations for female CpGs
+female_anno <- anno[rownames(anno) %in% top_female_cpgs, ]
+female_table <- female_anno[, c("Name", "chr", "pos", "UCSC_RefGene_Name", "UCSC_RefGene_Group")]
+
+# Handle missing
+missing_female <- setdiff(top_female_cpgs, female_table$Name)
+print(missing_female)
+male_anno <- anno[rownames(anno) %in% top_male_cpgs, ]
+male_table <- male_anno[, c("Name", "chr", "pos", "UCSC_RefGene_Name", "UCSC_RefGene_Group")]
+
+```
+```{r}
+# Common CpGs between male and female top lists
+shared_cpgs <- intersect(top_male_cpgs, top_female_cpgs)
+print(shared_cpgs)
+
+# Unique to males
+male_only <- setdiff(top_male_cpgs, top_female_cpgs)
+print(male_only)
+
+# Unique to females
+female_only <- setdiff(top_female_cpgs, top_male_cpgs)
+print(female_only)
+
+```
+```{r}
+# Create full tables to preserve order
+full_female <- data.frame(Name = top_female_cpgs, stringsAsFactors = FALSE)
+full_male <- data.frame(Name = top_male_cpgs, stringsAsFactors = FALSE)
+
+# Merge with annotations
+female_annotated <- merge(full_female, female_table, by = "Name", all.x = TRUE)
+male_annotated <- merge(full_male, male_table, by = "Name", all.x = TRUE)
+
+# Restore order
+female_annotated <- female_annotated[match(top_female_cpgs, female_annotated$Name), ]
+male_annotated <- male_annotated[match(top_male_cpgs, male_annotated$Name), ]
+
+# Pretty print
+library(knitr)
+kable(female_annotated, caption = "Top Female CpG Annotations")
+kable(male_annotated, caption = "Top Male CpG Annotations")
+
+```
+
